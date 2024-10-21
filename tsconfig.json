@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node", // Uses Node.js-style module resolution.
+    "target": "ESNext", // Targeting the latest version of JavaScript.
+    "module": "ESNext", // Using ECMAScript modules. set to CommonJs for dev, set to ESNext for prod, remove type from package.json for dev, add for prod
+    "outDir": "./dist", // Output directory for compiled JS files.
+    "rootDir": "./src", // The root directory for source files.
+    "strict": true, // Enable all strict type-checking options.
+    "esModuleInterop": true, // Ensures proper interop between CommonJS and ES modules.
+    "skipLibCheck": true, // Skip type checks of declaration files.
+    "forceConsistentCasingInFileNames": true, // Ensure file name casing consistency.
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export.
+    "resolveJsonModule": true, // Allow importing .json files.
+    "isolatedModules": true // Helps with module-based transpilers.
+  },
+  "include": ["src/**/*"], // Include all .ts files in the src directory.
+  "exclude": ["node_modules", "**/*.spec.ts"] // Exclude test files and node_modules.
+}
