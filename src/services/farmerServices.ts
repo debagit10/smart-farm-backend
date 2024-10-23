@@ -1,4 +1,5 @@
 import { Farmer } from "../models/farmerModel";
+import { Field } from "../models/fieldModel";
 import { Request, Response } from "express";
 import { hashPassword, verifyPassword } from "../config/password";
 import { encryptToken, generateToken } from "../config/token";
@@ -52,14 +53,75 @@ export const loginFarmer = async (req: Request, res: Response) => {
 
     const token = generateToken(user.email);
 
-    // Update farmer with token
     await Farmer.findByIdAndUpdate(user._id, { token });
 
     return res.status(200).json({
       success: "Login successful",
       user,
-      token: encryptToken(token), // Ensure encryptToken returns the correct value
+      token: encryptToken(token),
     });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const editFarmer = async (req: Request, res: Response) => {
+  const farmerData = req.body;
+
+  try {
+    const farmerExists = await Farmer.findOne({ _id: farmerData.id });
+
+    if (!farmerExists) {
+      return res.status(404).json({ error: "Farmer does not exist." });
+    }
+
+    const farmer = await Farmer.findOneAndUpdate(
+      { _id: farmerData.id },
+      farmerData,
+      { new: true, runValidators: true }
+    );
+
+    if (!farmer) {
+      return res.status(500).json({ error: "Failed to update profile" });
+    }
+
+    return res
+      .status(200)
+      .json({ success: "Profile updated successfully", farmer });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const deleteFarmer = async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  try {
+    const farmer = await Farmer.findByIdAndDelete(id);
+
+    if (!farmer) {
+      return res.status(404).json({ error: "Farmer does not exist." });
+    }
+
+    return res.status(200).json({ success: "Account deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const farmerField = async (req: Request, res: Response) => {
+  const { farmerID } = req.body;
+  try {
+    const fields = await Field.find({ farmerID: farmerID });
+
+    if (!fields) {
+      return res.status(500).json({ error: "User has no registered fields" });
+    }
+
+    res.status(200).json({ success: fields });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Server error" });

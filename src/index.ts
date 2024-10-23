@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db";
 import { farmerRoute } from "./routes/farmerRoutes";
+import { fieldRoute } from "./routes/fieldRoutes";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/farmer", farmerRoute);
+app.use("/api/field", fieldRoute);
 
 const startServer = async () => {
   try {
