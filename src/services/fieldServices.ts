@@ -1,5 +1,6 @@
 import { Field } from "../models/fieldModel";
 import { Request, Response } from "express";
+import { getCoordinates } from "../config/coordinates";
 
 export const addField = async (req: Request, res: Response) => {
   const fieldData = req.body;
@@ -91,7 +92,9 @@ export const fieldDetail = async (req: Request, res: Response) => {
       return res.status(500).json({ error: "Field does not exist" });
     }
 
-    res.status(200).json({ success: field });
+    const coord = await getCoordinates(field.address);
+
+    res.status(200).json({ success: { field, coord } });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Server error" });
